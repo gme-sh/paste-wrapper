@@ -9,11 +9,11 @@ import "time"
  */
 
 type responseCreate struct {
-	Status string                `json:"status"`
-	Result *responseCreateResult `json:"result"`
+	Status string        `json:"status"`
+	Result *PasteGGPaste `json:"result"`
 }
 
-type responseCreateResult struct {
+type PasteGGPaste struct {
 	ID          string    `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
@@ -25,6 +25,7 @@ type responseCreateResult struct {
 	Files   []*responseCreateFile `json:"files"`
 	// optional
 	DeletionKey string `json:"deletion_key"`
+	srv         *PasteGGService
 }
 
 type responseCreateFile struct {
@@ -40,6 +41,9 @@ type responseCreateFile struct {
  */
 
 type Create struct {
+	// optional
+	Authorization string `json:"-"`
+
 	// optional
 	Name string `json:"name,omitempty"`
 	// optional

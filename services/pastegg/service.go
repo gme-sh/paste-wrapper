@@ -1,6 +1,6 @@
 package pastegg
 
-type pasteGGService struct {
+type PasteGGService struct {
 	UrlPaste     string
 	ApiUrlCreate string
 }
@@ -10,28 +10,10 @@ const (
 	DefaultPasteGGUrlCreate = "https://api.paste.gg/v1/pastes"
 )
 
-func NewWithURLs(paste, apiCreate string) *pasteGGService {
-	return &pasteGGService{
-		UrlPaste:     paste,
-		ApiUrlCreate: apiCreate,
-	}
-}
-
-func New() *pasteGGService {
-	return NewWithURLs(DefaultPasteGGUrlPaste, DefaultPasteGGUrlCreate)
-}
-
-///
-
-type PasteGGPaste struct {
-	ID     string
-	prefix string
-}
-
-func (s *pasteGGService) newPaste(id string) *PasteGGPaste {
-	return &PasteGGPaste{
-		prefix: s.UrlPaste + "/",
-		ID:     id,
+func New() *PasteGGService {
+	return &PasteGGService{
+		UrlPaste:     DefaultPasteGGUrlPaste,
+		ApiUrlCreate: DefaultPasteGGUrlCreate,
 	}
 }
 
@@ -40,5 +22,8 @@ func (p *PasteGGPaste) GetID() string {
 }
 
 func (p *PasteGGPaste) GetURL() string {
-	return p.prefix + p.ID
+	if p.srv != nil {
+		return p.srv.UrlPaste + "/" + p.ID
+	}
+	return DefaultPasteGGUrlPaste + "/" + p.ID
 }

@@ -6,9 +6,10 @@ import (
 
 func WrapPayload(request *paste.UploadRequest) *Create {
 	return &Create{
-		Name:        request.Name,
-		Description: request.Description,
-		Visibility:  request.Visibility,
+		Authorization: request.Authorization,
+		Name:          request.Name,
+		Description:   request.Description,
+		Visibility:    request.Visibility,
 		Files: []*CreateFile{
 			{
 				Name: "",

@@ -1,12 +1,13 @@
-package pastegg
+package gist
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gme-sh/paste-wrapper"
 	"github.com/imroc/req"
 )
 
-func (s *PasteGGService) UploadPaste(d interface{}) (p paste.Paste, err error) {
+func (s *GistService) UploadPaste(d interface{}) (p paste.Paste, err error) {
 	switch payload := d.(type) {
 	// wrap UploadRequest
 	case *paste.UploadRequest:
@@ -25,22 +26,20 @@ func (s *PasteGGService) UploadPaste(d interface{}) (p paste.Paste, err error) {
 	return nil, fmt.Errorf("invalid parameter: [%T] %v", d, d)
 }
 
-func (s *PasteGGService) doCreateRequest(payload *Create) (paste *PasteGGPaste, err error) {
-	// Authorization Header
-	header := req.Header{}
-	if payload.Authorization != "" {
-		header["Authorization"] = "Key " + payload.Authorization
+func (s *GistService) doCreateRequest(payload *Create) (paste *GistPaste, err error) {
+	if payload.Authorization == "" {
+		return nil, errors.New("gist requires a authentication")
 	}
-
 	var resp *req.Resp
-	if resp, err = req.Post(s.ApiUrlCreate, req.BodyJSON(payload), header); err != nil {
+	if resp, err = req.Post(s.CreateApiUrl, req.BodyJSON(payload), req.Header{
+		"Authorization": "token " + payload.Authorization,
+	}); err != nil {
 		return
 	}
-	res := new(responseCreate)
+	res := new(GistPaste)
 	if err = resp.ToJSON(res); err != nil {
 		return
 	}
-	paste = res.Result
-	paste.srv = s
+	paste = res
 	return
 }

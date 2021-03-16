@@ -5,12 +5,11 @@ type Service interface {
 }
 
 type UploadRequest struct {
-	Authorization string
-	ContentType   string
 	Name          string
 	Description   string
 	Visibility    string
 	Content       []byte
+	Authorization string
 }
 
 type Paste interface {
